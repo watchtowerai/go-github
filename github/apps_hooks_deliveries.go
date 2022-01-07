@@ -8,7 +8,28 @@ package github
 import (
 	"context"
 	"fmt"
+	"io"
 )
+
+// temp func for exposing response body directly
+func (s *AppsService) ObserveListAppHookDeliveries(ctx context.Context, opts *ListCursorOptions, buf io.Writer) (*Response, error) {
+	u, err := addOptions("app/hook/deliveries", opts)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(ctx, req, buf)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
 
 // ListHookDeliveries lists deliveries of an App webhook.
 //
